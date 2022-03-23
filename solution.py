@@ -1,4 +1,4 @@
-import numpy as np
+import sys
 
 def split_list(a_list):
         half = len(a_list)//2
@@ -22,13 +22,10 @@ def format(inData):
     for i in range(0,len(W), 2) :
         WLinked.append(W[i:i+nbrofpairs])
         MLinked.append(M[i:i+nbrofpairs])
-    print("MLinked: ")
-    print(MLinked)
-    print("WLinked: ")
-    print(WLinked)
-    # r_shape = int(len(W)**0.5)
-    # W = np.array([W]).reshape(r_shape, r_shape + nbrofpairs)
-    # M = np.array([M]).reshape(r_shape, r_shape + nbrofpairs)
+    # print("MLinked: ")
+    # print(MLinked)
+    # print("WLinked: ")
+    # print(WLinked)
    
     return [nbrofpairs,WLinked,MLinked] #return the list of men and women
 
@@ -87,10 +84,17 @@ def GS(N,Men, Women):
 
 
 
-def test():
-    string = "2\n1 1 2\n2 2 1\n1 1 2\n2 2 1"
+def test(string):
+    #string = "2\n1 1 2\n2 2 1\n1 1 2\n2 2 1"
     N, W,M = format(string)
     MenPairs = GS(N=N, Women = W, Men = M)
     print(MenPairs)
+
+    # def testMessy(): #Sort into suitable format and send into format() and then Gale-Shapley
+    #     test()
+
 if __name__ == '__main__':
-    test()
+    i = ""
+    for line in sys.stdin:
+        i = i + line
+    test(i)
