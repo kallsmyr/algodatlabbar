@@ -1,38 +1,51 @@
-import sys
+import sys,copy, time
 
-def split_list(a_list):
-        half = len(a_list)//2
-        return a_list[:half], a_list[half:]
-
-def format(inData):
-    #nbrofPairs = int(inData[:inData.find("\n",0,4)]) #Hitta N \in (1,3000) genom att hitta första radbrytningen som kan finnas i index [0,3].
+def fixInput(inData):
+    start = time.time()
     inData_split = inData.split()
-    nbrofpairs = int(inData_split.pop(0))
-    inData_split = [int(i)-1 for i in inData_split]
-    idx_list = []
+    N = int(inData_split.pop(0))
+    inData_split = [int(i) for i in inData_split]
+    
 
-    for i in range(0, len(inData_split),1):
-        if i%(nbrofpairs+1) == 0:
-            idx_list.append(i)
-    res = [ele for idx, ele in enumerate(inData_split) if idx not in idx_list] 
+    Wind = []
+    lenWind = 0
+    W = []
+    M = []
+    for p in range(0,len(inData_split)-1, N+1):
+        if lenWind == N: #Unnecessary to search in Wind if it is already filled.
+            M.append(inData_split[p:p+N+1])
+        else:
+            if inData_split[p] not in Wind:
+                Wind.append(inData_split[p])
+                lenWind= lenWind+1
+                W.append(inData_split[p:p+N+1])
+            else:
+                M.append(inData_split[p:p+N+1])
+    end = time.time()
+    print("TIME TO READ INPUT: " + str(end-start)) 
+    return N, W, M
 
-    W,M = split_list(res) 
-    WLinked = []
-    MLinked = []
-    for i in range(0,len(W), 2) :
-        WLinked.append(W[i:i+nbrofpairs])
-        MLinked.append(M[i:i+nbrofpairs])
-    # print("MLinked: ")
-    # print(MLinked)
-    # print("WLinked: ")
-    # print(WLinked)
-   
-    return [nbrofpairs,WLinked,MLinked] #return the list of men and women
+def findManList(MenTemp,hisIndex):
+    for man in MenTemp:
+        if man[0] == hisIndex:
+            man.pop(0) #remove index
+            return man
+    return None
+
+def findWomanList(WomenTemp, herIndex):
+    for woman in WomenTemp:
+        if woman[0] == herIndex:
+            woman.pop(0) #remove index
+            return woman
+    return None
 
 def GS(N,Men, Women):
-
-    bachelors = list(range(N))
-
+    start = time.time()
+   
+    bachelors = []
+    for i in Men:
+        bachelors.append(i[0])
+    
     mensPartner = [None]*N
 
     womensPartner = [None]*N
@@ -40,61 +53,59 @@ def GS(N,Men, Women):
     nextManProposal = [0]*N
 
     while bachelors:
+        menTemp = copy.deepcopy(Men)
+        womenTemp = copy.deepcopy(Women)
 
         him = bachelors[0]
 
-        hisPreferences = Men[him]
+        hisPreferences = findManList(menTemp, him)
 
-        her = hisPreferences[nextManProposal[him]]
+        her = hisPreferences[nextManProposal[him-1]] #STUDERA index -1 är en lösning
 
-        herPreferences = Women[her]
+        herPreferences = findWomanList(womenTemp, her)
 
-        currentFiancee = womensPartner[her]
+        currentFiancee = womensPartner[her-1] #STUDERA
 
         if currentFiancee == None:
-            womensPartner[her] = him
-            mensPartner[him] = her
+            womensPartner[her-1] = him
+            mensPartner[him-1] = her
 
-            nextManProposal[him] = nextManProposal[him] + 1
+            nextManProposal[him-1] = nextManProposal[him-1] + 1
 
             bachelors.pop(0)
         else:
 
-            idx = herPreferences.index(currentFiancee)
+            idx = herPreferences.index(currentFiancee) #STUDERA DETTA, PÅ SISTA BACHELOR FÅS NONE
+            #Nu fås med 1testsmallmessy mensPartners[4 5 2 3], 5an kommer nog ifrån Nextmanproposal + 1!!!
+
+
+
+
             hisIdx = herPreferences.index(him)
-            if hisIdx < idx:
-                womensPartner[her] = him
-                mensPartner[him] = her
-                nextManProposal[him] = nextManProposal[him] + 1
+            if hisIdx < idx: #KIKA PÅ OM -1 SKA VARA HÄR! DEBUGGA
+                womensPartner[her-1] = him
+                mensPartner[him-1] = her
+                nextManProposal[him-1] = nextManProposal[him-1] + 1
 
                 bachelors.pop(0)
                 bachelors.insert(0,currentFiancee)
             else:
-                nextManProposal[him] = nextManProposal[him] + 1
-    mensPartner = [i +1 for i in mensPartner]
+                nextManProposal[him-1] = nextManProposal[him-1] + 1
+
+    end = time.time()
+    print("GALE-SHAPNEY METHOD'S TIME: " + str(end-start))
     return mensPartner
-
-    #Gale-Shapney Algorithm
-    #p = [m+1 for m in range(len(M))]
-    # while p != None:
-    #     m = p[i]
-    #     w = p[i][0]
-    #     i = i +1
     
-
-
-
 def test(string):
     #string = "2\n1 1 2\n2 2 1\n1 1 2\n2 2 1"
-    N, W,M = format(string)
-    MenPairs = GS(N=N, Women = W, Men = M)
+    N, W, M = fixInput(string)
+    MenPairs = GS(N,W,M)
     print(MenPairs)
-
-    # def testMessy(): #Sort into suitable format and send into format() and then Gale-Shapley
-    #     test()
 
 if __name__ == '__main__':
     i = ""
     for line in sys.stdin:
         i = i + line
+    # i = "4\n4 2 1 4 3\n1 3 2 4 1\n1 1 4\n3 2 2 2\n4 3 1 3 1 2 4\n3 3 4 3 1\n2 4\n3 2 4 1 2 1 3 2\n4"
     test(i)
+   
