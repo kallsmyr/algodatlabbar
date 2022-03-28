@@ -19,8 +19,10 @@ def fixInput(inData):
                 W.append(inData_split[p:p+N+1])
             else:
                 M.append(inData_split[p:p+N+1])
+    W = sorted(W)
+    M = sorted(M)
     end = time.time()
-    print("TIME TO READ INPUT: " + str(end-start)) 
+    print("TIME TO FIX INPUT: " + str(end-start)) 
     return N, W, M
 
 def findManList(MenTemp,hisIndex,N):
@@ -39,7 +41,7 @@ def findWomanList(WomenTemp, herIndex,N):
 
 def GS(N,Men, Women):
     start = time.time()
-   
+    findTime = 0
     bachelors = []
     for i in Men:
         bachelors.append(i[0])
@@ -51,10 +53,11 @@ def GS(N,Men, Women):
     nextManProposal = [0]*N
 
     while bachelors:
-        him = bachelors[0]
-
+        him = bachelors[-1]
+        startFind = time.time() 
         hisPreferences = findManList(Men, him,N)
-
+        endFind = time.time()
+        findTime = findTime + (endFind-startFind)
         her = hisPreferences[nextManProposal[him-1]]
 
         herPreferences = findWomanList(Women, her,N)
@@ -67,7 +70,7 @@ def GS(N,Men, Women):
 
             nextManProposal[him-1] = nextManProposal[him-1] + 1
 
-            bachelors.pop(0)
+            bachelors.pop()
         else:
 
             idx = herPreferences.index(currentFiancee)
@@ -80,12 +83,13 @@ def GS(N,Men, Women):
                 mensPartner[him-1] = her
                 nextManProposal[him-1] = nextManProposal[him-1] + 1
 
-                bachelors.pop(0)
+                bachelors.pop()
                 bachelors.insert(0,currentFiancee)
             else:
                 nextManProposal[him-1] = nextManProposal[him-1] + 1
 
     end = time.time()
+    print("Average time for finding man list: " + str(findTime))
     print("GALE-SHAPNEY METHOD'S TIME: " + str(end-start))
     return mensPartner
     
@@ -93,12 +97,14 @@ def test(string):
     #string = "2\n1 1 2\n2 2 1\n1 1 2\n2 2 1"
     N, W, M = fixInput(string)
     MenPairs = GS(N,W,M)
-    print(MenPairs)
+    for i in MenPairs:
+        print(i)
 
 if __name__ == '__main__':
-    i = ""
-    for line in sys.stdin:
-        i = i + line
-    # i = "4\n4 2 1 4 3\n1 3 2 4 1\n1 1 4\n3 2 2 2\n4 3 1 3 1 2 4\n3 3 4 3 1\n2 4\n3 2 4 1 2 1 3 2\n4"
-    test(i)
+    start = time.time()
+    # input = sys.stdin.read()
+    end = time.time()
+    print("TIME TO READ FILE FROM stdin-METHOD: " + str(end-start))
+    input = "4\n4 2 1 4 3\n1 3 2 4 1\n1 1 4\n3 2 2 2\n4 3 1 3 1 2 4\n3 3 4 3 1\n2 4\n3 2 4 1 2 1 3 2\n4"
+    test(input)
    
