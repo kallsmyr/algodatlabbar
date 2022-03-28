@@ -1,12 +1,10 @@
-import sys,copy, time
+import sys, time
 
 def fixInput(inData):
     start = time.time()
     inData_split = inData.split()
     N = int(inData_split.pop(0))
     inData_split = [int(i) for i in inData_split]
-    
-
     Wind = []
     lenWind = 0
     W = []
@@ -25,17 +23,17 @@ def fixInput(inData):
     print("TIME TO READ INPUT: " + str(end-start)) 
     return N, W, M
 
-def findManList(MenTemp,hisIndex):
+def findManList(MenTemp,hisIndex,N):
     for man in MenTemp:
         if man[0] == hisIndex:
-            man.pop(0) #remove index
+            man = man[1:N+1]
             return man
     return None
 
-def findWomanList(WomenTemp, herIndex):
+def findWomanList(WomenTemp, herIndex,N):
     for woman in WomenTemp:
         if woman[0] == herIndex:
-            woman.pop(0) #remove index
+            woman = woman[1:N+1]
             return woman
     return None
 
@@ -53,18 +51,15 @@ def GS(N,Men, Women):
     nextManProposal = [0]*N
 
     while bachelors:
-        menTemp = copy.deepcopy(Men)
-        womenTemp = copy.deepcopy(Women)
-
         him = bachelors[0]
 
-        hisPreferences = findManList(menTemp, him)
+        hisPreferences = findManList(Men, him,N)
 
-        her = hisPreferences[nextManProposal[him-1]] #STUDERA index -1 är en lösning
+        her = hisPreferences[nextManProposal[him-1]]
 
-        herPreferences = findWomanList(womenTemp, her)
+        herPreferences = findWomanList(Women, her,N)
 
-        currentFiancee = womensPartner[her-1] #STUDERA
+        currentFiancee = womensPartner[her-1] 
 
         if currentFiancee == None:
             womensPartner[her-1] = him
@@ -75,14 +70,12 @@ def GS(N,Men, Women):
             bachelors.pop(0)
         else:
 
-            idx = herPreferences.index(currentFiancee) #STUDERA DETTA, PÅ SISTA BACHELOR FÅS NONE
-            #Nu fås med 1testsmallmessy mensPartners[4 5 2 3], 5an kommer nog ifrån Nextmanproposal + 1!!!
-
+            idx = herPreferences.index(currentFiancee)
 
 
 
             hisIdx = herPreferences.index(him)
-            if hisIdx < idx: #KIKA PÅ OM -1 SKA VARA HÄR! DEBUGGA
+            if hisIdx < idx:
                 womensPartner[her-1] = him
                 mensPartner[him-1] = her
                 nextManProposal[him-1] = nextManProposal[him-1] + 1
