@@ -19,20 +19,20 @@ def fixInput(inData):
                 W.append(inData_split[p:p+N+1])
             else:
                 M.append(inData_split[p:p+N+1])
-    W = sorted(W)
+    W = sorted(W) #Python can sort list of lists by first element with this!
     M = sorted(M)
     end = time.time()
     print("TIME TO FIX INPUT: " + str(end-start)) 
     return N, W, M
 
-def findManList(MenTemp,hisIndex,N):
+def findManList(MenTemp,hisIndex,N): #UNUSED!
     for man in MenTemp:
         if man[0] == hisIndex:
             man = man[1:N+1]
             return man
     return None
 
-def findWomanList(WomenTemp, herIndex,N):
+def findWomanList(WomenTemp, herIndex,N): #UNUSED!
     for woman in WomenTemp:
         if woman[0] == herIndex:
             woman = woman[1:N+1]
@@ -41,7 +41,6 @@ def findWomanList(WomenTemp, herIndex,N):
 
 def GS(N,Men, Women):
     start = time.time()
-    findTime = 0
     bachelors = []
     for i in Men:
         bachelors.append(i[0])
@@ -54,14 +53,9 @@ def GS(N,Men, Women):
 
     while bachelors:
         him = bachelors[-1]
-        startFind = time.time() 
-        hisPreferences = findManList(Men, him,N)
-        endFind = time.time()
-        findTime = findTime + (endFind-startFind)
+        hisPreferences = Men[him-1][1:]
         her = hisPreferences[nextManProposal[him-1]]
-
-        herPreferences = findWomanList(Women, her,N)
-
+        herPreferences = Women[her-1][1:]
         currentFiancee = womensPartner[her-1] 
 
         if currentFiancee == None:
@@ -89,7 +83,6 @@ def GS(N,Men, Women):
                 nextManProposal[him-1] = nextManProposal[him-1] + 1
 
     end = time.time()
-    print("Average time for finding man list: " + str(findTime))
     print("GALE-SHAPNEY METHOD'S TIME: " + str(end-start))
     return mensPartner
     
@@ -97,14 +90,15 @@ def test(string):
     #string = "2\n1 1 2\n2 2 1\n1 1 2\n2 2 1"
     N, W, M = fixInput(string)
     MenPairs = GS(N,W,M)
-    for i in MenPairs:
-        print(i)
+    # for i in MenPairs:
+    #     print(i)
 
 if __name__ == '__main__':
     start = time.time()
-    # input = sys.stdin.read()
+    input = sys.stdin.read()
+    # input = open("C:/Users/Carl/Programmering/EDAF05-labs-public/1stablemarriage/data/secret/2testmid.in").read()
     end = time.time()
     print("TIME TO READ FILE FROM stdin-METHOD: " + str(end-start))
-    input = "4\n4 2 1 4 3\n1 3 2 4 1\n1 1 4\n3 2 2 2\n4 3 1 3 1 2 4\n3 3 4 3 1\n2 4\n3 2 4 1 2 1 3 2\n4"
+    # input = "4\n4 2 1 4 3\n1 3 2 4 1\n1 1 4\n3 2 2 2\n4 3 1 3 1 2 4\n3 3 4 3 1\n2 4\n3 2 4 1 2 1 3 2\n4"
     test(input)
    
