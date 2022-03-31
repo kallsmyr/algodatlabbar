@@ -78,7 +78,7 @@ def MenByIndex(Women): #The GS algorithm produces the stable matching which is w
 def GS(M,W, printOption):
     if printOption == False:
         start = time.time()
-    bachelors = []  #Bachelors, format is [bachelor i, #antal frierier]
+    bachelors = []  #Bachelors, format is [bachelor i, #next to propose to]
     marriedWomen = [None]*len(W) #married women
     W = MenByIndex(W) #As the hint suggest we need to reverse the list from value v at index i to index i at value v.
     #  Example: woman i has preflist: 4 1 2 3 -> 2 3 4 1 are the indexes, in python: 1 2 3 0
@@ -138,13 +138,7 @@ def testAllTC():
     print("----------------------------------------------")
     print("RUNTIME FOR ALL TESTS: " + str(time.time() - start))
 
-
-
-
-
-
-
 if __name__ == '__main__':
-    # test()
+    test()
     # testTimeComplexity("secret\\5testhugemessy.in") # "secret\\4testhuge.in" , "secret\\0testsmall.in" , "secret\\1testsmallmessy.in", "secret\\2testmid.in" , "secret\\3testlarge.in" , "secret\\5testhugemessy.in", "sample\\1.in" , "sample\\2.in"
-    testAllTC()
+    # testAllTC()
