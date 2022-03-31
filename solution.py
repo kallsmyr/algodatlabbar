@@ -16,19 +16,19 @@ def input():
     lenWind = 0
     for p in range(0,len(nbrs), N+1):
         if lenWind ==N:
-            M.append(nbrs[p:p+N+1])
+            M.append(nbrs[p:p+N+1]) #When all women have been found, add all men to M
         else:
-            if nbrs[p] not in Wind:
+            if nbrs[p] not in Wind: #If woman with this index hasnt been found
                 Wind.append(nbrs[p])
                 lenWind +=1
-                W.append(nbrs[p:p+N+1])
+                W.append(nbrs[p:p+N+1]) #Add her to W
             else:
-                M.append(nbrs[p:p+N+1])
+                M.append(nbrs[p:p+N+1]) #Otherwise its a man so add to M
     W = sorted(W, reverse = False)  # Python can sort list of lists by first element with this!
     M = sorted(M, reverse = False)
     return M, W
 
-def customInput(filePath):
+def customInput(filePath):#This works the same way as input() but it can read the files from our computers directly
     start = time.time()
     input = open(filePath)
     N = int(input.readline())
@@ -85,23 +85,23 @@ def GS(M,W, printOption):
     for m in M:
         bachelors.append([m[0],1])
     
-    while bachelors:
-        him = bachelors.pop()
+    while bachelors: #As long as there are single men
+        him = bachelors.pop() #Take the last man in bachelors
         her = M[him[0]-1][him[1]] #Get his first preferred woman
-        him[1] = him[1] + 1 #If this man looses his marriage to his fist preferred woman, then he'd like to marry the next woman in his prefList
+        him[1] = him[1] + 1 #If this man loses his marriage to his first preferred woman, then he'd like to marry the next woman in his prefList
         #  I förra koden sparade vi här i princip currentFiancee = marriedWomen[her-1], 
         # men verkade som att currentFiancee inte hade samma minnesadress som marriedWomen[her-1]. Går lika bra att undvika en tempvariabel i detta fall.
-        if marriedWomen[her-1] is None:
+        if marriedWomen[her-1] is None: #If she's single, she accepts him
             marriedWomen[her-1] = him
-        elif W[her-1][him[0]] < W[her-1][marriedWomen[her-1][0]]:
-            bachelors.append(marriedWomen[her-1])
-            marriedWomen[her-1] = him
+        elif W[her-1][him[0]] < W[her-1][marriedWomen[her-1][0]]: #If she prefers the proposer to her current fiancee
+            bachelors.append(marriedWomen[her-1]) #She dumps the current fiancee
+            marriedWomen[her-1] = him #And starts dating proposer
         else:
             bachelors.append(him)
-    if printOption == True:
+    if printOption == True: #Here we print all men's partner
         for i in range(0,len(marriedWomen)):
          print(marriedWomen[i][0])
-    else:
+    else: #Here we instead see the runtime
         print("TIME TO PERFORM GALE-SHAPNEY METHOD: " + str(time.time() - start))
 
 def test():
@@ -109,7 +109,8 @@ def test():
     GS(M,W, True)
 
 def testTimeComplexity(SearchPath): #either sample/1.in or sample/2.in OR secret/#testxxxx.in
-    dir = "C:\\Users\\Carl\\Programmering\\EDAF05-labs-public\\1stablemarriage\\data\\"
+    dir = "C:\\Users\\Carl\\Programmering\\EDAF05-labs-public\\1stablemarriage\\data\\" #Carls path
+    # dir = "C:\\Users\\Isak\\Documents\\AlgoDat\\EDAF05-labs-public-master\\EDAF05-labs-public-master\\1stablemarriage\\data\\" #Isaks path
     filePath = str(dir + SearchPath)
     print("TIME COMPLEXITY FOR " + SearchPath)
     start = time.time()
@@ -138,7 +139,12 @@ def testAllTC():
     print("----------------------------------------------")
     print("RUNTIME FOR ALL TESTS: " + str(time.time() - start))
 
+
+
+
+
+
 if __name__ == '__main__':
-    test()
+    # test()
     # testTimeComplexity("secret\\5testhugemessy.in") # "secret\\4testhuge.in" , "secret\\0testsmall.in" , "secret\\1testsmallmessy.in", "secret\\2testmid.in" , "secret\\3testlarge.in" , "secret\\5testhugemessy.in", "sample\\1.in" , "sample\\2.in"
-    # testAllTC()
+    testAllTC()
