@@ -31,6 +31,33 @@ def graphmaker(dict):#O(n^2)
                 if arccheck(i,j):
                     dict[i].append(j)
 
+def BFS(dict,startword,goalword,N):
+    layer = 0
+    visited = [0]*N
+    dictlist = list(dict)
+    #print(dictlist)
+    words = [startword]
+    while (len(words) > 0):
+        layer += 1
+        neighbors = dict[words.pop()]
+        for i in neighbors:
+            idx = dictlist.index(i)
+            if visited[idx] == 0:
+                if i == goalword:
+                    return layer
+                visited[idx] = 1
+                words.append(i)
+    return "Impossible"
+        
+            
+    
+
+
+
 if __name__ == '__main__':
-    print(arccheck('there', 'where'))
+    dict = {"there":[], "where":[], "input":[], "putin":[], "hello":[], "cheer":[], "sheer":[], "cutin":[], "lolem":[]}
+    graphmaker(dict)
+    print(dict)
+    print(BFS(dict,"input","cutin",len(dict)))
+    #print(arccheck('there', 'where'))
     
