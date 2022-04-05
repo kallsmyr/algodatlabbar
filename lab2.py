@@ -24,6 +24,13 @@ def arccheck(word1, word2):
         return True
     return False
 
+def graphmaker(dict):#O(n^2)
+    for i in dict:
+        for j in dict:
+            if i != j:
+                if arccheck(i,j):
+                    dict[i].append(j)
+
 if __name__ == '__main__':
     print(arccheck('there', 'where'))
     
