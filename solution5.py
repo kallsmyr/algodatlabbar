@@ -51,14 +51,14 @@ def similarity(matrix,char1,char2,characters):
     return matrix[characters[char1]][characters[char2]]
 
 def NeedlemanWunsch(string1,string2,F,alpha,delta,characters):
-    string1 = {idx: char for idx, char in enumerate(string1)} #kan göra dictionary fast ha idx:char istället...
+    string1 = {idx: char for idx, char in enumerate(string1)} #kan göra dictionary fast ha idx:char istället... :3
     string2 = {idx: char for idx, char in enumerate(string2)}
     i = len(string1)
     j = len(string2)
     s1 = []
     s2 = []
     
-    while (i > 0 and j > 0):
+    while (i > 0 or j > 0):
         
         if (i>0 and j>0 and F[i,j] == F[i-1,j-1] + similarity(alpha,string1[i-1],string2[j-1],characters)): #No displacement, we change nothing
             s1.append(string1[i-1])
@@ -73,16 +73,6 @@ def NeedlemanWunsch(string1,string2,F,alpha,delta,characters):
             s1.append("*")
             s2.append(string2[j-1])
             j -=1
-
-    #Rewrite in java?
-    while i > 0:
-            s1.append(string1[i-1])
-            s2.append("*")
-            i -=1
-    while j > 0:
-        s1.append("*")
-        s2.append(string2[j-1])
-        j -=1
 
     return "".join(s1)[::-1], "".join(s2)[::-1] #join takes O(1) so that's good!
 
